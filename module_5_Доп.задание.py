@@ -20,31 +20,30 @@ class UrTube:
         self.current_user = None
 
     def log_in(self, nickname, password):
-        for nickname in self.users:
-            if nickname == self.users[nickname] and password == self.users[nickname]:
-                current_user = nickname
+        for user_log in self.users:
+            if user_log.nickname == nickname and user_log.password == password:
+                self.current_user = user_log
 
     def register(self, nickname, password, age):
-        nickname = input("Введите имя пользователя: ")
-        password = input("Введите пароль: ")
-        age = input("Введите возраст: ")
-        if nickname in users[]:
-            print(f'Пользователь {nickname} уже существует')
-        else:
-            users[].add(users.nickname, users.password, users.age)
+        for user_reg in self.users:
+            if user_reg.nickname == nickname:
+                print(f'Пользователь {nickname} уже существует')
+            else:
+                new_user = User(nickname, password, age)
+                self.users.append(new_user)
 
+    def log_out(self):
+        self.current_user = None
 
+    def add(self, title, duration, time_now, adult_mode):
+        for video_ in self.videos:
+            if video_.title != title:
+                new_video = Video(title, duration, time_now, adult_mode)
+                self.videos.append(new_video)
 
-
-
-    # def log_out(self):
-    #
-    # def add(self):
-    #
-    # def get_video(self):
+    #def get_video(self):
     #
     # def watch_video(self):
-
 
 
 
