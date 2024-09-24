@@ -10,10 +10,11 @@ class Video:
         self.title = str(title)
         self.duration = duration
         self.time_now = 0
+        self.adult_mode = adult_mode
 
 
 class UrTube:
-    def __int__(self, users, videos, current_user):
+    def __init__(self):
         self.users = []
         self.videos = []
         self.current_user = None
@@ -35,35 +36,46 @@ class UrTube:
     def log_out(self):
         self.current_user = None
 
-    def add(self, title, duration, time_now, adult_mode=False):
+    def add(self, title, duration):
         for video_ in self.videos:
             if video_.title != title:
-                new_video = Video(title, duration, time_now)
+                new_video = Video(title, duration)
                 self.videos.append(new_video)
                 return
 
-    def get_video(self, word):
+    def get_videos(self, poisk):
         result = []
-        for title in self.title:
-            if word.lower() in title.lower():
-                result.append(title)
+        for video in self.videos:
+            if poisk.lower() in video.title.lower():
+                result.append(video.title)
                 return result
 
-    def watch_video(self):
+    def watch_video(self, name_video, sleep=None):
         if not self.current_user:
             print("Войдите в аккаунт, чтобы смотреть видео")
             return
+        for video in self.videos:
+            if name_video.lower() in video.title.lower():
+                if video.adult_mode and self.current_user.age < 18:
+                    print("Вам нет 18 лет, пожалуйста покиньте страницу")
+                else:
+                    for i in range(1, 11):
+                        print(i, end='')
+                        sleep(1)
+                    print(" Конец видео")
+                    return
+                return
 
-        if self.age < 18:
-            print("Вам нет 18 лет, пожалуйста покиньте страницу")
-            return
-
-        for name_video in self.title:
-            if name_video == self.title:
-                self.duration = name_video
-                self.time.sleep(1)
-                print("Конец видео")
-                self.time_now = 0
+    #   if self.age < 18:
+    #     print("Вам нет 18 лет, пожалуйста покиньте страницу")
+    #     return
+    #
+    #   for name_video in self.title:
+    #     if name_video == self.title:
+    #         self.duration = name_video
+    #         self.time.sleep(1)
+    #         print("Конец видео")
+    #         self.time_now = 0
 
 
 ur = UrTube()
@@ -90,4 +102,3 @@ print(ur.current_user)
 
 # Попытка воспроизведения несуществующего видео
 ur.watch_video('Лучший язык программирования 2024 года!')
-
