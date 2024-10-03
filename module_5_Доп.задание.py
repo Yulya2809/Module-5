@@ -1,8 +1,14 @@
+from time import sleep
+
+
 class User:
     def __init__(self, nickname, password, age):
         self.nickname = str(nickname)
         self.password = hash(password)
         self.age = int(age)
+
+    # def __str__(self):
+    #     return f"{self.nickname}"
 
 
 class Video:
@@ -20,28 +26,37 @@ class UrTube:
         self.current_user = None
 
     def log_in(self, nickname, password):
-        for user_log in self.users:
-            if user_log.nickname == nickname and user_log.password == password:
-                self.current_user = user_log
-                return
+        for user in self.users:
+            if user.nickname == nickname and user.password == password:
+                self.current_user = user
+                return True
+        return False
 
     def register(self, nickname, password, age):
-        for user_reg in self.users:
-            if user_reg.nickname == nickname:
-                print(f'Пользователь {nickname} уже существует')
-            else:
-                new_user = User(nickname, password, age)
-                self.users.append(new_user)
+        if len(self.users) == 0:
+            new_user = User(nickname, password, age)
+            self.users.append(new_user)
+            if self.log_in(new_user.nickname, new_user.password):
+                self.current_user = new_user
+        else:
+            for user in self.users:
+                if user.nickname == nickname:
+                    print(f"Пользователь {nickname} уже существует")
+                    return
+                else:
+                    new_user = User(nickname, password, age)
+                    self.users.append(new_user)
+                    if self.log_in(new_user.nickname, new_user.password):
+                        self.current_user = new_user
+                    return
 
     def log_out(self):
         self.current_user = None
 
-    def add(self, title, duration):
-        for video_ in self.videos:
-            if video_.title != title:
-                new_video = Video(title, duration)
-                self.videos.append(new_video)
-                return
+    def add(self, *videos: Video):
+        for video in videos:
+            if not any(v.title == video.title for v in self.videos):
+                self.videos.append(video)
 
     def get_videos(self, poisk):
         result = []
@@ -50,8 +65,8 @@ class UrTube:
                 result.append(video.title)
                 return result
 
-    def watch_video(self, name_video, sleep=None):
-        if not self.current_user:
+    def watch_video(self, name_video: str):
+        if self.current_user is None:
             print("Войдите в аккаунт, чтобы смотреть видео")
             return
         for video in self.videos:
@@ -62,20 +77,9 @@ class UrTube:
                     for i in range(1, 11):
                         print(i, end='')
                         sleep(1)
-                    print(" Конец видео")
-                    return
+                        print(" Конец видео")
                 return
-
-    #   if self.age < 18:
-    #     print("Вам нет 18 лет, пожалуйста покиньте страницу")
-    #     return
-    #
-    #   for name_video in self.title:
-    #     if name_video == self.title:
-    #         self.duration = name_video
-    #         self.time.sleep(1)
-    #         print("Конец видео")
-    #         self.time_now = 0
+        return
 
 
 ur = UrTube()
